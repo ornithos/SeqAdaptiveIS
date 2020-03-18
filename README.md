@@ -1,6 +1,6 @@
 # SeqAdaptiveIS
 
-Sequential adaptive mixture importance sampling (sequential AMIS). This is an implementation of AMIS (Cappé et al. 2008), which iteratively improves a proposal distribution via re-fitting to the (weighted) importance samples. It's implemented such that it's easy to use on a sequence of target distributions ($p\_1, \ldots, p\_T$) such that the proposal adapted at time $t$ can be used as the initial proposal at time $t+1$.
+Sequential adaptive mixture importance sampling (sequential AMIS). This is an implementation of AMIS (Cappé et al. 2008), which iteratively improves a proposal distribution via re-fitting to the (weighted) importance samples. It's implemented such that it's easy to use on a sequence of target distributions ($p\_1, \ldots, p\_T$); i.e. such that the proposal adapted at time $t$ can be used as the initial proposal at time $t+1$.
 
 Note that I wrote the source for this a couple of years before this refactoring, and so if correctness vs the paper is critical for you, please check the source, as I don't remember if there was any deviation from the paper. FWIW it's unlikely that there is anything major different, but it may differ in some small details.
 
