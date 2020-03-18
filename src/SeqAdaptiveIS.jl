@@ -1,12 +1,14 @@
 module SeqAdaptiveIS
 
+using StatsBase
+
 # Struct for holding results of inference.
 struct MCPosterior
     samples::AbstractMatrix
     logW::Vector
 end
 
-weights(P::MCPosterior) = softmax(P.logW)
+StatsBase.weights(P::MCPosterior) = softmax(P.logW)
 resample(P::MCPosterior, N::Int) = P.samples[rand(Categorical(weights(P)), N),:]
 Base.length(P::MCPosterior) = length(P.logW)
 ess(P::MCPosterior) = eff_ss(P.logW)
@@ -23,8 +25,9 @@ end
 include("inference.jl")
 
 # Application to sequential problems
+include("sequential.jl")
 
-export amis, weights, resample, ess, seq_amis
+export amis, resample, ess, seq_amis
 
 end # module
 

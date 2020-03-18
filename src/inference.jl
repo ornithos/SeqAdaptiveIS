@@ -1,6 +1,6 @@
 using Distributions, StatsBase, StatsFuns, Random
 using LinearAlgebra, Clustering
-using Formatting, Parameters
+using Formatting
 
 
 eye(d) = Matrix(I, d, d)
