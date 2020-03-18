@@ -370,7 +370,7 @@ function amis(log_f, pis, mus, covs::AbstractArray, S::AbstractMatrix, W::Abstra
         ν_S = sample_from_gmm(gmm_smps, pis, mus, covs*IS_tilt, shuffle=false)
 
         log_W = log_f(ν_S) - gmm_llh(ν_S, 1, pis, mus, covs*IS_tilt);
-        ν_W = Flux.softmax(vec(log_W));
+        ν_W = softmax(vec(log_W));
 
         (i == nepochs) || (eff_ss(ν_W) >= terminate * gmm_smps) && break
     end
