@@ -1,25 +1,26 @@
 # Sequential Adaptive Mixture Importance Sampling (Sequential AMIS)
 
 This inference routine is designed to be used on static sequential models, that
-is, where one has a sequence of target distributions:
+is, where one has a sequence of target distributions. As a point of history, it
+was developed for the context of a hierarchical model, where one is interested
+in the sequence of posterior distributions:
 
 <p align="center">
   <img src="assets/latex-staticmodel.gif"/>
 </p>
 
-This corresponds to a graphical model of the following form:
+My personal motivation was the multi-task dynamical system, where performing
+efficient inference over $z$ turned out to be more challenging than expected.
+The graphical model takes the following form:
 
 <p align="center">
   <img src="assets/tikz-staticmodel.png"/>
 </p>
 
-This inference problem may be encountered for instance in a hierarchical model,
-where variables are observed sequentially. This was the case for my work on the
-multi-task dynamical system, and performing efficient inference over $z$ turned
-out to be more challenging than expected (for instance, one cannot use particle
-filtering, since this results only in re-weighting a single set of particles,
-and assumed density filtering can be expensive when the reverse KL projection
-cannot be done cheaply.
+and particle filtering is effectively not possible, and assumed density
+filtering too expensive. Nevertheless, sequential AMIS may be used for any
+sequence of target, such as annealing between a source and target distribution.
+
 
 ## AMIS
 
