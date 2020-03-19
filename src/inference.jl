@@ -9,7 +9,8 @@ weight_perp(W) = let w=W/sum(W); -sum(w.* log.(w))/log(length(W)) end
 
 
 # softmax which accepts kwargs. This is actually slower than `softmax(x')'`
-# in many cases, but :shrugs:, I wrote this a while ago.
+# in many cases, but :shrugs:, I wrote this a while ago, and is not usually the
+# bottleneck of the code.
 function softmax2(logp; dims=2)
     p = exp.(logp .- maximum(logp, dims=dims))
     p ./= sum(p, dims=dims)
@@ -26,6 +27,8 @@ function logsumexprows(X::AbstractArray{T}) where {T<:Real}
 end
 
 
+# Kitagawa resampling (as used e.g. in SMC). This is sometimes useful if one is
+# using resampling within a sequential AMIS scheme.
 """
     multicategorical_kitagawa(p::Vector{T}, m::Int64)
 
@@ -366,6 +369,10 @@ function amis(log_f, pis, mus, covs::AbstractArray, S::AbstractMatrix, W::Abstra
 
     ν_S, ν_W, log_W = S, W, nothing
     for i = 1:nepochs
+        ## #TODO: inefficient, since most 'entry points' have that the weighted
+        ## sample (S,W) is taken from the current GMM. Hence the following two
+        ## lines should be moved to the *end* of the loop body. I'll need to do
+        ## some checks to make sure it doesn't break anything.
         pis, mus, covs = gmm_custom(ν_S, ν_W, pis, mus, covs; max_iter=3, tol=1e-3, verbose=false);
         ν_S = sample_from_gmm(gmm_smps, pis, mus, covs*IS_tilt, shuffle=false)
 
@@ -390,4 +397,3 @@ end
 # #     plot_level_curves_all(mus, UTs; ax=ax)
 #     ax[:scatter](splat(S)..., c=rgba_colors, kwargs...)
 # end
-

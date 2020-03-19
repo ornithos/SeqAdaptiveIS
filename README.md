@@ -38,15 +38,25 @@ of interest in its own right. For complex or high dimensional target
 distributions, one may wish to consider annealing from the prior. This may be
 easily accomplished using the sequential AMIS function below.
 
-Caveat emptor: I wrote the source for this a couple of years before this
-refactoring, and therefore I cannot vouch for the correctness of the code wrt
-the original paper. FWIW it's unlikely that there is anything major different,
-but it may differ in some small details.
+**Implementation notes**: I wrote the source for this a couple of years before
+this refactoring, and therefore I cannot vouch for the correctness of the code
+wrt the original paper. FWIW it's unlikely that there is anything major
+different, but it may differ in some small details.
 
-The AMIS syntax is as follows (dumped from the help file:)
+One detail that *is* different is that the GMM fit at each iteration uses
+previous proposal as a (weak) prior for the refined GMM. This helps avoid the
+usual component degeneracy issue which causes unbounded likelihoods. But it
+further helps in the (common) case where importance sampling results in a very
+low effective sample size after re-weighting (if KL(target || proposal) is
+large). Fitting a distribution to the resulting sample can result in a complete
+collapse of the proposal distribution, and the algorithm effectively gets
+'stuck'. This is avoided by use of conjugate priors (Dirichlet,
+NormalInverseWishart) which provide additional 'pseudo-observations'.
+
+The AMIS syntax is as follows (dumped from the docstring:)
 
 ```julia
-    amis(log_f, pis, mus, covs::AbstractArray; nepochs=5, gmm_smps=1000, IS_tilt=1., terminate=0.75, debug=false)
+    amis(log_f, pis, mus, covs; nepochs=5, gmm_smps=1000, IS_tilt=1., terminate=0.75, debug=false)
 
     amis(log_f, S, k::Int; nepochs=5, gmm_smps=1000, IS_tilt=1., terminate=0.75, debug=false)
 
