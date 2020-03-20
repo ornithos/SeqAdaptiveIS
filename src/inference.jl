@@ -1,4 +1,4 @@
-using Distributions, StatsBase, StatsFuns, Random
+using Distributions, StatsBase, StatsFuns, ..Random
 using LinearAlgebra, Clustering
 using Formatting
 

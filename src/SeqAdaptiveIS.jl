@@ -1,6 +1,6 @@
 module SeqAdaptiveIS
 
-using StatsBase
+using StatsBase, Random
 
 # Struct for holding results of inference.
 struct MCPosterior
@@ -10,7 +10,8 @@ end
 
 StatsBase.weights(P::MCPosterior) = softmax(P.logW)
 # resample(P::MCPosterior, N::Int) = P.samples[rand(Categorical(weights(P)), N),:]
-resample(P::MCPosterior, N::Int) = P.samples[multicategorical_kitagawa(weights(P), N), :]
+resample(rng::MersenneTwister, P::MCPosterior, N::Int) = P.samples[multicategorical_kitagawa(weights(P), N),:]
+resample(P::MCPosterior, N::Int) = resample(Random.GLOBAL_RNG, P, N)
 Base.length(P::MCPosterior) = length(P.logW)
 ess(P::MCPosterior) = eff_ss(P.logW)
 

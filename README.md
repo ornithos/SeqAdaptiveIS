@@ -43,7 +43,7 @@ this refactoring, and therefore I cannot vouch for the correctness of the code
 wrt the original paper. FWIW it's unlikely that there is anything major
 different, but it may differ in some small details.
 
-One detail that *is* different is that the GMM fit at each iteration uses
+One detail that *is* different is that the GMM fit at each iteration uses the
 previous proposal as a (weak) prior for the refined GMM. This helps avoid the
 usual component degeneracy issue which causes unbounded likelihoods. But it
 further helps in the (common) case where importance sampling results in a very
@@ -53,7 +53,7 @@ collapse of the proposal distribution, and the algorithm effectively gets
 'stuck'. This is avoided by use of conjugate priors (Dirichlet,
 NormalInverseWishart) which provide additional 'pseudo-observations'.
 
-The AMIS syntax is as follows (dumped from the docstring:)
+**Syntax** (dumped from the docstring):
 
 ```julia
     amis(log_f, pis, mus, covs; nepochs=5, gmm_smps=1000, IS_tilt=1., terminate=0.75, debug=false)
@@ -85,10 +85,10 @@ argument.
 
 The sequential AMIS routine exploits the proposal distribution learned at time
 $t-1$ as the initial proposal at time $t$. This can have a useful annealing
-effect. It is not especially difficult to code up this sequential procedure
-using the AMIS routine above, but there are a couple of useful additions
-implemented here, not least retrying AMIS with different parameters when the
-effective sample size becomes too low.
+effect. It is not difficult to code up this sequential procedure using the AMIS
+routine above, but there are a couple of useful additions implemented here, not
+least retrying AMIS with different parameters when the effective sample size
+becomes too low.
 
 The function `seq_amis`:
 
@@ -99,12 +99,16 @@ seq_amis(target_logfs, init_dist::Union{Distribution, Int}, k::Int; nepochs=4, I
 
 takes a vector (or other iterable) of target log densities (these may be unnormalized, as above), an initial distribution (one can supply simply the dimension of the problem to use the default of a standard multivariate Gaussian), and the number of GMM components, $k$.
 
+## Example
+
 A simple example, using Gaussian targets (from the test script) is:
 
 ```julia
 n_targets = 8
 true_pars = [(zeros(2) .+ i, Float64[1 0; 0 1] ./ i) for i in 1:n_targets];
 seq_targets = [x->logpdf(MvNormal(μ, Σ), x') for (μ, Σ) in true_pars]
+prior = MvNormal(zeros(2), Float64[1 0; 0 1])
 
-seq_smps, seq_gmms = seq_amis(seq_targets, 2, 3)
+seq_smps, seq_gmms = seq_amis(seq_targets, prior, 3)
+# which is equivalent to seq_amis(seq_targets, 2, 3)
 ```

@@ -67,7 +67,7 @@ function seq_amis(target_logfs, init_dist::Union{Distribution, Int}, k::Int; nep
             # increase computation / spread of proposal when ESS is low and retry
             # ==> This could be much smarter -- I'm currently throwing away the previous computation.
             # (Although note that not infrequently the previous computation is ~ uninformative.)
-            IS_tilt, nepochs = IS_tilt*1.3, nepochs + 1
+            c_IS_tilt, c_nepochs = c_IS_tilt*1.3, c_nepochs + 1
             verbose && printfmtln("Retrying... (ess = {:.1f})", c_ess)
         end
         c_dist = GMMComp(pis, mus, covs)
