@@ -43,7 +43,7 @@ particle does not follow a multinomial distribution hence my clunky name,
 ("On Resampling Algorithms for Particle Filters"), but of course following
 Kitagawa, 1996.
 """
-function multicategorical_kitagawa(p::Vector{T}, m::Int64) where T <: AbstractFloat
+function multicategorical_kitagawa(rng::MersenneTwister, p::Vector{T}, m::Int64) where T <: AbstractFloat
     n = length(p)
     x = zeros(Int, m)     # return
     interval = sum(p)/m   # stratified intervals on [0,1) * sum(p) [sum p = 1 normally]
@@ -52,7 +52,7 @@ function multicategorical_kitagawa(p::Vector{T}, m::Int64) where T <: AbstractFl
 #     println(" cs     lb    r     smp")
     for mm in 1:m
         lb = (mm-1)*interval
-        r = rand()*interval
+        r = rand(rng)*interval
         while cs < lb + r
 #             println(format("{:.3f} {:.3f} {:.3f} {:.3f}", cs, lb, r, lb+r))
             i += 1
@@ -68,7 +68,7 @@ function multicategorical_kitagawa(p::Vector{T}, m::Int64) where T <: AbstractFl
     end
     return x
 end
-
+multicategorical_kitagawa(p::Vector{T}, m::Int64) = multicategorical_kitagawa(Random.GLOBAL_RNG, p, m)
 
 ################################################################################
 ##                                                                            ##

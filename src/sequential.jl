@@ -74,7 +74,7 @@ function seq_amis(target_logfs, init_dist::Union{Distribution, Int}, k::Int; nep
 
         push!(smp_out, MCPosterior(S, logW))
         push!(dist_out, GMMComp(pis, mus, covs))
-        verbose && printfmtln("Posterior {:d}, ess={:.2f}, cum. time taken = {:.2f}s ({:.2f})", i, c_ess,
+        verbose && printfmtln("Posterior {:02d}, ess={:.2f}, cum. time taken = {:.2f}s ({:.2f})", i, c_ess,
             time()-t_begin, time() - t0); flush(stdout);
         t0 = time()
     end

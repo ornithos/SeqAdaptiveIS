@@ -10,10 +10,10 @@ end
 
 StatsBase.weights(P::MCPosterior) = softmax(P.logW)
 # resample(P::MCPosterior, N::Int) = P.samples[rand(Categorical(weights(P)), N),:]
-resample(rng::MersenneTwister, P::MCPosterior, N::Int) = P.samples[multicategorical_kitagawa(weights(P), N),:]
+resample(rng::MersenneTwister, P::MCPosterior, N::Int) = P.samples[multicategorical_kitagawa(rng, weights(P), N),:]
 resample(P::MCPosterior, N::Int) = resample(Random.GLOBAL_RNG, P, N)
 Base.length(P::MCPosterior) = length(P.logW)
-ess(P::MCPosterior) = eff_ss(P.logW)
+ess(P::MCPosterior) = eff_ss(weights(P))
 
 # useful class for holding components of GMM (unlike native impl, cholesky is not calculated)
 # Not especially useful outside of this package, so it is not exported by default.
