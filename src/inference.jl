@@ -68,7 +68,7 @@ function multicategorical_kitagawa(rng::MersenneTwister, p::Vector{T}, m::Int64)
     end
     return x
 end
-multicategorical_kitagawa(p::Vector{T}, m::Int64) = multicategorical_kitagawa(Random.GLOBAL_RNG, p, m)
+multicategorical_kitagawa(p::Vector{T}, m::Int64) where T <: AbstractFloat = multicategorical_kitagawa(Random.GLOBAL_RNG, p, m)
 
 ################################################################################
 ##                                                                            ##
