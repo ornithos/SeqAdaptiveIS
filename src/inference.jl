@@ -1,4 +1,6 @@
-using Distributions, StatsBase, StatsFuns, ..Random
+using Distributions
+using Distributions: MvNormal, logpdf
+using StatsBase, StatsFuns, ..Random
 using LinearAlgebra, Clustering
 using Formatting
 
@@ -43,7 +45,7 @@ particle does not follow a multinomial distribution hence my clunky name,
 ("On Resampling Algorithms for Particle Filters"), but of course following
 Kitagawa, 1996.
 """
-function multicategorical_kitagawa(rng::MersenneTwister, p::Vector{T}, m::Int64) where T <: AbstractFloat
+function multicategorical_kitagawa(rng::AbstractRNG, p::Vector{T}, m::Int64) where T <: AbstractFloat
     n = length(p)
     x = zeros(Int, m)     # return
     interval = sum(p)/m   # stratified intervals on [0,1) * sum(p) [sum p = 1 normally]

@@ -80,6 +80,11 @@ $n$-length vector `W` of log weights corresponding to each sample. In this case,
 one must supply an integer $k$ (for the GMM components) as a final positional
 argument.
 
+**Return value**
+This function returns a `MCPosterior` struct which contains a matrix of samples (`.samples`) and a vector of log
+weights (`.logW`). We provide a few helper methods such as `weights(.)` for (normalized) per-sample weights, `ess(.)`
+to calculate the Effective Sample Size and `resample(., N)` to resample `N` samples from the discrete posterior.
+
 
 ## Sequential AMIS
 
@@ -99,11 +104,23 @@ seq_amis(target_logfs, init_dist::Union{Distribution, Int}, k::Int; nepochs=4, I
 
 takes a vector (or other iterable) of target log densities (these may be unnormalized, as above), an initial distribution (one can supply simply the dimension of the problem to use the default of a standard multivariate Gaussian), and the number of GMM components, $k$.
 
-## Example
+## Example Usage
 
-A simple example, using Gaussian targets (from the test script) is:
+
+
+A simple example, using Gaussian targets is shown below. If you haven't, instantiate the
+environment, e.g. via
+```julia
+activate .
+instantiate
+```
+Then run the test script (`include("test/runtests.jl")`) or if you'd prefer an interactive session, run the
+following commands:
 
 ```julia
+using Distributions: MvNormal, logpdf
+using SeqAdaptiveIS
+
 n_targets = 8
 true_pars = [(zeros(2) .+ i, Float64[1 0; 0 1] ./ i) for i in 1:n_targets];
 seq_targets = [x->logpdf(MvNormal(μ, Σ), x') for (μ, Σ) in true_pars]
@@ -111,4 +128,10 @@ prior = MvNormal(zeros(2), Float64[1 0; 0 1])
 
 seq_smps, seq_gmms = seq_amis(seq_targets, prior, 3)
 # which is equivalent to seq_amis(seq_targets, 2, 3)
+
+# test e.g.
+mean(seq_samps[8].samples, dims=1) # ~= [8,8]
 ```
+
+For those unfamiliar with Julia, note that the first function call will hit the Just-Ahead-of-Time compiler, and incur
+a substantial delay before running.

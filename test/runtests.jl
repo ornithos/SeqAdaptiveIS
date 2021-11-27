@@ -1,7 +1,9 @@
 println("Testing...")
 using Test
 using SeqAdaptiveIS
-using Distributions, StatsFuns
+using StatsFuns
+using Distributions: MvNormal, logpdf
+using Statistics: mean, cov
 
 # These are fairly rudimentary 2D tests with easy targets: I guess their primary
 # purpose is to ensure that nothing has *broken* the procedures, but is not
